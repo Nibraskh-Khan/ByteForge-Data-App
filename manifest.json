@@ -97,5 +97,29 @@
       "url": "/?page=buyData",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
+  ],
+  "widgets": [
+    {
+      "name": "Quick Data Recharge",
+      "description": "Buy data instantly from your home screen",
+      "url": "/?page=buyData",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
+      "shortcuts": [
+        {
+          "name": "1GB Data ₦350",
+          "url": "/?page=buyData&plan=1GB"
+        },
+        {
+          "name": "500MB ₦200",
+          "url": "/?page=buyData&plan=500MB"
+        }
+      ]
+    }
   ]
 }

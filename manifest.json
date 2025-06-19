@@ -1,0 +1,67 @@
+{
+  "name": "ByteForge Data App",
+  "short_name": "ByteForge",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait",
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "display_override": ["window-controls-overlay"],
+  "edge_side_panel": {
+    "preferred_width": 600
+  },
+  "file_handlers": [
+    {
+      "action": "/open-file",
+      "accept": {
+        "application/json": [".json"]
+      }
+    }
+  ],
+  "handle_links": "preferred",
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.byteforge.dataapp",
+      "id": "com.byteforge.dataapp"
+    }
+  ],
+  "iarc_rating_id": "e1c26399-9dd3-4c84-a778-1e8905a5aa62",
+  "categories": ["utilities", "productivity", "tools"],
+  "launch_handler": {
+    "client_mode": "auto"
+  },
+  "scope_extensions": [
+    {
+      "origin": "https://byteforge-data-app.netlify.app"
+    }
+  ]
+}

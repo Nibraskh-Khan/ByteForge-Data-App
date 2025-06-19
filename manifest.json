@@ -65,5 +65,37 @@
     {
       "origin": "https://byteforge-data-app.netlify.app"
     }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+byteforge",
+      "url": "/?action=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "shortcuts": [
+    {
+      "name": "Buy Airtime",
+      "short_name": "Airtime",
+      "description": "Quickly buy airtime",
+      "url": "/?page=buyAirtime",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Buy Data",
+      "short_name": "Data",
+      "description": "Quickly buy data",
+      "url": "/?page=buyData",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
   ]
 }

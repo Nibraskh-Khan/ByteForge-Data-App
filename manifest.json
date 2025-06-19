@@ -88,14 +88,26 @@
       "short_name": "Airtime",
       "description": "Quickly buy airtime",
       "url": "/?page=buyAirtime",
-      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "Buy Data",
       "short_name": "Data",
       "description": "Quickly buy data",
       "url": "/?page=buyData",
-      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
   "widgets": [

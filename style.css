@@ -1,75 +1,153 @@
+/* Global Settings */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
+    transition: background-color 0.3s ease;
 }
 
+/* Container */
 .auth-container {
-    background-color: white;
+    background-color: #ffffff;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     text-align: center;
-    width: 300px;
-}
-
-.auth-container input {
     width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    max-width: 350px;
 }
 
-.auth-container button {
-    padding: 10px 20px;
+/* Form Inputs */
+.auth-container input,
+form select,
+form input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.auth-container input:focus,
+form input:focus,
+form select:focus {
+    border-color: #3b82f6;
+    outline: none;
+}
+
+/* Buttons */
+.auth-container button,
+form button,
+.dashboard-buttons button {
+    padding: 12px;
+    font-size: 16px;
     background-color: #3b82f6;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.auth-container a {
-    color: #3b82f6;
-    text-decoration: none;
+.auth-container button:hover,
+form button:hover,
+.dashboard-buttons button:hover {
+    background-color: #2563eb;
 }
 
 .dashboard-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 25px;
 }
 
 .dashboard-buttons button {
-    padding: 10px;
-    font-size: 16px;
-    border: none;
     background-color: #10b981;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
 }
 
-form select,
-form input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+.dashboard-buttons button:hover {
+    background-color: #059669;
 }
 
-form button {
-    padding: 10px 20px;
-    background-color: #3b82f6;
-    color: white;
+/* Links */
+.auth-container a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-container a:hover {
+    text-decoration: underline;
+}
+
+/* Error Handling */
+input.error {
+    border: 1px solid red;
+    background-color: #ffe5e5;
+}
+
+span.error-message {
+    color: red;
+    font-size: 0.85em;
+    display: block;
+    margin-top: -6px;
+    margin-bottom: 10px;
+}
+
+/* Mobile Friendly */
+@media screen and (max-width: 480px) {
+    .auth-container {
+        padding: 20px;
+    }
+
+    .dashboard-buttons button {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+/* Dark Mode Styling */
+body.dark {
+    background-color: #121212;
+    color: #eee;
+}
+
+body.dark .auth-container {
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+body.dark input,
+body.dark select {
+    background-color: #333;
+    color: #eee;
+    border-color: #555;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #facc15;
+    color: black;
     border: none;
     border-radius: 5px;
+    padding: 8px 12px;
     cursor: pointer;
+    font-size: 14px;
+    z-index: 1000;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark .theme-toggle {
+    background-color: #fcd34d;
+    color: #111;
 }

@@ -1,46 +1,156 @@
 let isLogin = true;
-let users = [];
-let transactionHistory = [];
-let currentUser = "";
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let currentUser = null;
 
+// Toggle Login/Register form
 function toggleForm() {
-  const title = document.getElementById("form-title");
-  const switchText = document.getElementById("switch-text");
   isLogin = !isLogin;
+  const formTitle = document.getElementById("form-title");
+  const registerFields = document.getElementById("register-fields");
+  const confirmPassword = document.getElementById("confirmPassword");
+  const switchText = document.getElementById("switch-text");
+  const submitBtn = document.querySelector("button[type='submit']");
 
   if (isLogin) {
-    title.innerText = "Login";
+    formTitle.innerText = "Login";
+    registerFields.style.display = "none";
+    confirmPassword.style.display = "none";
+    submitBtn.innerText = "Login";
     switchText.innerHTML = `Don't have an account? <a href="#" onclick="toggleForm()">Register here</a>`;
   } else {
-    title.innerText = "Register";
+    formTitle.innerText = "Register";
+    registerFields.style.display = "block";
+    confirmPassword.style.display = "block";
+    submitBtn.innerText = "Register";
     switchText.innerHTML = `Already have an account? <a href="#" onclick="toggleForm()">Login here</a>`;
   }
 }
 
+function showError(message, elementId = null) {
+  alert("❌ " + message);
+  if (elementId) {
+    const el = document.getElementById(elementId);
+    if (el) el.style.border = "2px solid red";
+  }
+}
+
+function clearFieldErrors() {
+  document.querySelectorAll("input, select").forEach(el => {
+    el.style.border = "";
+  });
+}
+
 document.getElementById("auth-form").addEventListener("submit", function (e) {
   e.preventDefault();
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+
+  // Clear previous errors
+  document.querySelectorAll(".error").forEach(el => el.classList.remove("error"));
+  document.querySelectorAll(".error-message").forEach(el => el.remove());
+
+  const username = document.getElementById("username");
+  const password = document.getElementById("password");
+  const confirmPassword = document.getElementById("confirmPassword");
+  const email = document.getElementById("email");
+  const phone = document.getElementById("phone");
+
+  let hasError = false;
+
+  function showError(input, message) {
+    input.classList.add("error");
+    const msg = document.createElement("span");
+    msg.className = "error-message";
+    msg.innerText = message;
+    input.insertAdjacentElement("afterend", msg);
+    hasError = true;
+  }
 
   if (isLogin) {
-    const user = users.find((u) => u.username === username && u.password === password);
+    if (!username.value.trim()) showError(username, "Username is required.");
+    if (!password.value.trim()) showError(password, "Password is required.");
+
+    if (hasError) return;
+
+    const user = users.find(u => u.username === username.value.trim() && u.password === password.value.trim());
     if (user) {
-      currentUser = user.username;
-      showDashboard(currentUser);
+      currentUser = user;
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+      showDashboard(user.username);
     } else {
-      alert("Invalid login!");
+      showError("Invalid username or password.");
     }
+
   } else {
-    const exists = users.some((u) => u.username === username);
-    if (exists) {
-      alert("Username already exists");
-    } else {
-      users.push({ username, password });
-      alert("Registered successfully. Please login.");
-      toggleForm();
+    const fields = [
+      { el: document.getElementById("firstName"), msg: "First name is required." },
+      { el: document.getElementById("lastName"), msg: "Last name is required." },
+      { el: email, msg: "Valid email is required." },
+      { el: phone, msg: "Valid phone number is required." },
+      { el: username, msg: "Username is required." },
+      { el: password, msg: "Password is required." },
+      { el: confirmPassword, msg: "Please confirm your password." }
+    ];
+
+    fields.forEach(f => {
+      if (!f.el.value.trim()) showError(f.el, f.msg);
+    });
+
+    if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
+      showError(confirmPassword, "Passwords do not match.");
     }
+
+    // Basic format checks (optional)
+    const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    const phonePattern = /^[0-9]{10,15}$/;
+
+    if (email.value && !emailPattern.test(email.value)) {
+      showError(email, "Invalid email format.");
+    }
+
+    if (phone.value && !phonePattern.test(phone.value)) {
+      showError(phone, "Phone must be 10–15 digits.");
+    }
+
+    if (hasError) return;
+
+    // Continue to OTP Simulation
+    const newUser = {
+      firstName: document.getElementById("firstName").value.trim(),
+      middleName: document.getElementById("middleName").value.trim(),
+      lastName: document.getElementById("lastName").value.trim(),
+      username: username.value.trim(),
+      email: email.value.trim(),
+      phone: phone.value.trim(),
+      password: password.value.trim(),
+      referral: document.getElementById("referral").value.trim(),
+      otpMethod: document.querySelector("input[name='otpChoice']:checked").value
+    };
+
+    const fakeOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    localStorage.setItem("pendingUser", JSON.stringify(newUser));
+    localStorage.setItem("otpCode", fakeOTP);
+
+    alert(`OTP sent via ${newUser.otpMethod.toUpperCase()}: ${fakeOTP}`);
+    promptOTP();
   }
 });
+
+function promptOTP() {
+  const enteredOtp = prompt("Enter the OTP you received:");
+  const storedOtp = localStorage.getItem("otpCode");
+  const pendingUser = JSON.parse(localStorage.getItem("pendingUser"));
+
+  if (enteredOtp === storedOtp && pendingUser) {
+    users.push(pendingUser);
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("✅ Registration successful. You can now log in.");
+    toggleForm();
+  } else {
+    showError("Invalid OTP. Registration failed.");
+  }
+
+  localStorage.removeItem("pendingUser");
+  localStorage.removeItem("otpCode");
+}
 
 function showDashboard(username) {
   document.querySelector(".auth-container").style.display = "none";
@@ -49,10 +159,25 @@ function showDashboard(username) {
 }
 
 function logout() {
+  currentUser = null;
   document.querySelector(".auth-container").style.display = "block";
   document.getElementById("dashboard").style.display = "none";
-  document.getElementById("username").value = "";
-  document.getElementById("password").value = "";
+  document.getElementById("auth-form").reset();
+}
+
+toggleForm();
+
+// Simulate secure auto-login prompt (Password confirmation or fingerprint)
+function secureLoginPrompt(savedUser) {
+  const passwordPrompt = prompt(`🔐 Enter your password to unlock (${savedUser.username}):`);
+
+  if (passwordPrompt === savedUser.password) {
+    currentUser = savedUser;
+    showDashboard(savedUser.username);
+  } else {
+    alert("❌ Incorrect password. Access denied.");
+    localStorage.removeItem("autoLoginUser");
+  }
 }
 
 function navigateTo(page) {
@@ -98,6 +223,7 @@ function navigateTo(page) {
       `;
 
       transactionHistory.push(`DATA: ${network.toUpperCase()} - ${dataPlan}MB for ${phoneNumber}`);
+      localStorage.setItem("transactionHistory", JSON.stringify(transactionHistory));
       
       // Attempt to trigger background sync
       if ('serviceWorker' in navigator && 'SyncManager' in window) {
@@ -197,28 +323,34 @@ function navigateTo(page) {
 
   else if (page === 'history') {
     let historyHtml = "<h3>Transaction History</h3>";
-
-    if (transactionHistory.length === 0) {
+    const storedHistory = JSON.parse(localStorage.getItem("transactionHistory") || "[]");
+  
+    if (storedHistory.length === 0) {
       historyHtml += "<p>No transactions yet.</p>";
     } else {
       historyHtml += "<ul>";
-      transactionHistory.forEach(item => {
+      storedHistory.forEach(item => {
         historyHtml += `<li>${item}</li>`;
       });
       historyHtml += "</ul>";
     }
-
+  
     document.getElementById("content-screen").innerHTML = historyHtml;
-  }
+  }  
 
   else if (page === 'profile') {
+    const user = users.find((u) => u.username === currentUser);
+  
     document.getElementById("content-screen").innerHTML = `
       <h3>Profile</h3>
-      <p><strong>Username:</strong> ${currentUser}</p>
-      <p><strong>Email:</strong> ${currentUser}@byteforge.com</p>
+      <p><strong>Full Name:</strong> ${user.firstName} ${user.middleName || ''} ${user.lastName}</p>
+      <p><strong>Username:</strong> ${user.username}</p>
+      <p><strong>Email:</strong> ${user.email}</p>
+      <p><strong>Phone:</strong> ${user.phone}</p>
+      <p><strong>Referral:</strong> ${user.referral || 'N/A'}</p>
       <p><strong>Status:</strong> Active</p>
     `;
-  }
+  }  
 }
 
 // Register service worker + sync setup
@@ -226,7 +358,6 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js')
     .then(async registration => {
       console.log('✅ Service Worker Registered!');
-      // Register periodic background sync
       if ('periodicSync' in registration) {
         try {
           await registration.periodicSync.register('update-data', {
@@ -240,3 +371,34 @@ if ('serviceWorker' in navigator) {
     })
     .catch(error => console.log('❌ Service Worker Failed:', error));
 }
+
+// ✅ Secure auto-login after service worker
+window.addEventListener("DOMContentLoaded", () => {
+  const savedUser = localStorage.getItem("loggedInUser");
+  if (savedUser) {
+    const parsedUser = JSON.parse(savedUser);
+    const rePassword = prompt(`🔐 Welcome back, ${parsedUser.username}! Please enter your password to continue:`);
+
+    if (rePassword === parsedUser.password) {
+      currentUser = parsedUser;
+      showDashboard(currentUser.username);
+    } else {
+      showError("Incorrect password. Please log in manually.");
+      logout();
+    }
+  }
+});
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark');
+}
+
+// 🔌 Detect offline mode
+window.addEventListener("offline", () => {
+  alert("⚠️ You are currently offline. Some features may not work.");
+});
+
+// 🔁 Detect back online
+window.addEventListener("online", () => {
+  alert("✅ You're back online!");
+});

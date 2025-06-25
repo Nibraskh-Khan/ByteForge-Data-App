@@ -2,7 +2,7 @@
   "name": "ByteForge Data App",
   "short_name": "ByteForge",
   "id": "/",
-  "start_url": "/index.html",
+  "start_url": "./index.html?homescreen=1",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -31,12 +31,14 @@
     {
       "src": "screenshot1.png",
       "sizes": "1280x720",
-      "type": "image/png"
+      "type": "image/png",
+      "label": "Dashboard - Data and Airtime Purchase"
     },
     {
       "src": "screenshot2.png",
       "sizes": "1280x720",
-      "type": "image/png"
+      "type": "image/png",
+      "label": "Wallet, Transactions & Profile"
     }
   ],
 

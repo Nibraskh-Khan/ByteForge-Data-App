@@ -1,4 +1,4 @@
-/* Global Settings */
+/* 🌐 Global Settings */
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,10 +7,10 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Container */
+/* 📦 Container */
 .auth-container {
     background-color: #ffffff;
     padding: 30px;
@@ -21,7 +21,7 @@ body {
     max-width: 350px;
 }
 
-/* Form Inputs */
+/* ✏️ Form Inputs */
 .auth-container input,
 form select,
 form input {
@@ -31,7 +31,9 @@ form input {
     border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 14px;
-    transition: border-color 0.3s ease;
+    background-color: #fff;
+    color: #000;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .auth-container input:focus,
@@ -41,10 +43,11 @@ form select:focus {
     outline: none;
 }
 
-/* Buttons */
+/* ✅ Buttons */
 .auth-container button,
 form button,
 .dashboard-buttons button {
+    width: 100%;
     padding: 12px;
     font-size: 16px;
     background-color: #3b82f6;
@@ -61,6 +64,7 @@ form button:hover,
     background-color: #2563eb;
 }
 
+/* 🧭 Dashboard Buttons */
 .dashboard-buttons {
     display: flex;
     flex-direction: column;
@@ -76,7 +80,7 @@ form button:hover,
     background-color: #059669;
 }
 
-/* Links */
+/* 🔗 Links */
 .auth-container a {
     color: #3b82f6;
     text-decoration: none;
@@ -87,7 +91,7 @@ form button:hover,
     text-decoration: underline;
 }
 
-/* Error Handling */
+/* ❗ Error Handling */
 input.error {
     border: 1px solid red;
     background-color: #ffe5e5;
@@ -101,7 +105,7 @@ span.error-message {
     margin-bottom: 10px;
 }
 
-/* Mobile Friendly */
+/* 📱 Mobile Responsiveness */
 @media screen and (max-width: 480px) {
     .auth-container {
         padding: 20px;
@@ -113,7 +117,7 @@ span.error-message {
     }
 }
 
-/* Dark Mode Styling */
+/* 🌒 Dark Mode Styling */
 body.dark {
     background-color: #121212;
     color: #eee;
@@ -131,7 +135,7 @@ body.dark select {
     border-color: #555;
 }
 
-/* Theme Toggle Button */
+/* 🌞 Theme Toggle Button */
 .theme-toggle {
     position: fixed;
     top: 10px;
@@ -150,4 +154,24 @@ body.dark select {
 body.dark .theme-toggle {
     background-color: #fcd34d;
     color: #111;
+}
+
+/* 💠 Splash Screen Fade */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 1s ease-out;
+}
+
+#splash-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
 }

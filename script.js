@@ -1,6 +1,8 @@
 let isLogin = true;
 let users = JSON.parse(localStorage.getItem("users")) || [];
 let currentUser = null;
+let transactionHistory = JSON.parse(localStorage.getItem("transactionHistory")) || [];
+
 
 // Toggle Login/Register form
 function toggleForm() {
@@ -339,7 +341,7 @@ function navigateTo(page) {
   }  
 
   else if (page === 'profile') {
-    const user = users.find((u) => u.username === currentUser);
+    const user = users.find((u) => u.username === currentUser?.username);
   
     document.getElementById("content-screen").innerHTML = `
       <h3>Profile</h3>
@@ -373,7 +375,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // ✅ Secure auto-login after service worker
-window.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   const savedUser = localStorage.getItem("loggedInUser");
   if (savedUser) {
     const parsedUser = JSON.parse(savedUser);
@@ -401,4 +403,20 @@ window.addEventListener("offline", () => {
 // 🔁 Detect back online
 window.addEventListener("online", () => {
   alert("✅ You're back online!");
+});
+
+// Splash Setting
+
+window.addEventListener('load', () => {
+  const splash = document.getElementById('splash-screen');
+  splash.classList.add('fade-out');
+
+  setTimeout(() => {
+    splash.style.display = 'none';
+    document.querySelector('.auth-container').style.display = 'block';
+    toggleForm();
+  }, 1000); // 1s for fade-out
+
+  // Optional: use 5-10s delay if you want dramatic story effect
+  // setTimeout(() => { ... }, 5000); instead
 });

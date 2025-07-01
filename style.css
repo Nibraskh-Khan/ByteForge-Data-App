@@ -10,27 +10,34 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 📦 Container */
+/* 📷 Auth Header Image */
+.auth-header {
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 20px;
+}
+
+/* 📦 Auth Container */
 .auth-container {
     background-color: #ffffff;
-    padding: 30px;
-    border-radius: 10px;
+    padding: 30px 20px;
+    border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     text-align: center;
     width: 90%;
-    max-width: 350px;
+    max-width: 400px;
+    position: relative;
 }
 
-/* ✏️ Form Inputs */
+/* ✏️ Inputs */
 .auth-container input,
-form select,
-form input {
+form select {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     margin: 10px 0;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid #ccc;
-    font-size: 14px;
+    font-size: 15px;
     background-color: #fff;
     color: #000;
     transition: border-color 0.3s ease, background-color 0.3s ease;
@@ -39,59 +46,149 @@ form input {
 .auth-container input:focus,
 form input:focus,
 form select:focus {
-    border-color: #3b82f6;
+    border-color: #f57c00;
     outline: none;
 }
 
-/* ✅ Buttons */
-.auth-container button,
-form button,
-.dashboard-buttons button {
-    width: 100%;
-    padding: 12px;
+/* 🔐 Password Toggle */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper .toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
     font-size: 16px;
-    background-color: #3b82f6;
+}
+
+/* ✅ Main Button */
+.auth-container button,
+form button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    background-color: #f57c00;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .auth-container button:hover,
-form button:hover,
-.dashboard-buttons button:hover {
-    background-color: #2563eb;
+form button:hover {
+    background-color: #e65100;
 }
 
-/* 🧭 Dashboard Buttons */
-.dashboard-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 25px;
+/* 🔁 Switch Form Text */
+#switch-text {
+    margin-top: 15px;
+    font-size: 14px;
 }
 
-.dashboard-buttons button {
-    background-color: #10b981;
-}
-
-.dashboard-buttons button:hover {
-    background-color: #059669;
-}
-
-/* 🔗 Links */
-.auth-container a {
-    color: #3b82f6;
+#switch-text a {
+    color: #f57c00;
+    font-weight: 600;
     text-decoration: none;
-    font-weight: 500;
 }
 
-.auth-container a:hover {
+#switch-text a:hover {
     text-decoration: underline;
 }
 
-/* ❗ Error Handling */
+/* ❓ Forgot Password */
+.forgot-link {
+    text-align: right;
+    font-size: 13px;
+    margin-top: -5px;
+    margin-bottom: 10px;
+}
+
+.forgot-link a {
+    color: #666;
+    text-decoration: none;
+}
+
+.forgot-link a:hover {
+    text-decoration: underline;
+}
+
+/* 🧭 Dashboard */
+#dashboard {
+    width: 100%;
+    max-width: 480px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #004aad;
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.balance-box {
+    text-align: right;
+}
+
+.balance-box h2 {
+    margin: 5px 0;
+    font-size: 24px;
+    color: #fff;
+}
+
+.balance-box p {
+    font-size: 13px;
+    color: #e0e0e0;
+}
+
+/* 🎯 Dashboard Buttons */
+.dashboard-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.dashboard-buttons button {
+    padding: 12px;
+    font-size: 14px;
+    background-color: #f57c00;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.dashboard-buttons button:hover {
+    background-color: #e65100;
+}
+
+/* ❗ Error Input */
 input.error {
     border: 1px solid red;
     background-color: #ffe5e5;
@@ -105,19 +202,23 @@ span.error-message {
     margin-bottom: 10px;
 }
 
-/* 📱 Mobile Responsiveness */
+/* 📱 Mobile Responsive */
 @media screen and (max-width: 480px) {
     .auth-container {
-        padding: 20px;
+        padding: 20px 15px;
     }
 
-    .dashboard-buttons button {
-        font-size: 14px;
-        padding: 10px;
+    .dashboard-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        text-align: center;
     }
 }
 
-/* 🌒 Dark Mode Styling */
+/* 🌒 Dark Mode */
 body.dark {
     background-color: #121212;
     color: #eee;
@@ -125,7 +226,6 @@ body.dark {
 
 body.dark .auth-container {
     background-color: #1e1e1e;
-    color: #fff;
 }
 
 body.dark input,
@@ -135,7 +235,11 @@ body.dark select {
     border-color: #555;
 }
 
-/* 🌞 Theme Toggle Button */
+body.dark .dashboard-header {
+    background: #1a237e;
+}
+
+/* 🌞 Theme Toggle */
 .theme-toggle {
     position: fixed;
     top: 10px;
@@ -143,8 +247,8 @@ body.dark select {
     background-color: #facc15;
     color: black;
     border: none;
-    border-radius: 5px;
-    padding: 8px 12px;
+    border-radius: 6px;
+    padding: 8px 14px;
     cursor: pointer;
     font-size: 14px;
     z-index: 1000;
@@ -156,7 +260,7 @@ body.dark .theme-toggle {
     color: #111;
 }
 
-/* 💠 Splash Screen Fade */
+/* 💠 Splash Screen */
 #splash-screen {
     position: fixed;
     top: 0;
@@ -168,10 +272,28 @@ body.dark .theme-toggle {
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    flex-direction: column;
     transition: opacity 1s ease-out;
 }
 
 #splash-screen.fade-out {
     opacity: 0;
     pointer-events: none;
+}
+
+.splash-logo {
+    width: 100px;
+    margin-bottom: 10px;
+}
+
+.splash-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #f57c00;
+    margin: 0;
+}
+
+.splash-subtitle {
+    color: #888;
+    font-size: 14px;
 }

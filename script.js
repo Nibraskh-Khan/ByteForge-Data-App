@@ -3,8 +3,7 @@ let users = JSON.parse(localStorage.getItem("users")) || [];
 let currentUser = null;
 let transactionHistory = JSON.parse(localStorage.getItem("transactionHistory")) || [];
 
-
-// Toggle Login/Register form
+// Toggle Login/Register UI
 function toggleForm() {
   isLogin = !isLogin;
   const formTitle = document.getElementById("form-title");
@@ -28,6 +27,7 @@ function toggleForm() {
   }
 }
 
+// Show inline error
 function showError(message, elementId = null) {
   alert("❌ " + message);
   if (elementId) {
@@ -36,16 +36,10 @@ function showError(message, elementId = null) {
   }
 }
 
-function clearFieldErrors() {
-  document.querySelectorAll("input, select").forEach(el => {
-    el.style.border = "";
-  });
-}
-
+// Handle form submission
 document.getElementById("auth-form").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  // Clear previous errors
   document.querySelectorAll(".error").forEach(el => el.classList.remove("error"));
   document.querySelectorAll(".error-message").forEach(el => el.remove());
 
@@ -57,7 +51,7 @@ document.getElementById("auth-form").addEventListener("submit", function (e) {
 
   let hasError = false;
 
-  function showError(input, message) {
+  function inlineError(input, message) {
     input.classList.add("error");
     const msg = document.createElement("span");
     msg.className = "error-message";
@@ -67,9 +61,8 @@ document.getElementById("auth-form").addEventListener("submit", function (e) {
   }
 
   if (isLogin) {
-    if (!username.value.trim()) showError(username, "Username is required.");
-    if (!password.value.trim()) showError(password, "Password is required.");
-
+    if (!username.value.trim()) inlineError(username, "Username is required.");
+    if (!password.value.trim()) inlineError(password, "Password is required.");
     if (hasError) return;
 
     const user = users.find(u => u.username === username.value.trim() && u.password === password.value.trim());
@@ -78,43 +71,39 @@ document.getElementById("auth-form").addEventListener("submit", function (e) {
       localStorage.setItem("loggedInUser", JSON.stringify(user));
       showDashboard(user.username);
     } else {
-      showError("Invalid username or password.");
+      alert("❌ Invalid username or password.");
     }
-
   } else {
     const fields = [
       { el: document.getElementById("firstName"), msg: "First name is required." },
       { el: document.getElementById("lastName"), msg: "Last name is required." },
       { el: email, msg: "Valid email is required." },
-      { el: phone, msg: "Valid phone number is required." },
+      { el: phone, msg: "Phone number is required." },
       { el: username, msg: "Username is required." },
       { el: password, msg: "Password is required." },
-      { el: confirmPassword, msg: "Please confirm your password." }
+      { el: confirmPassword, msg: "Please confirm password." }
     ];
 
     fields.forEach(f => {
-      if (!f.el.value.trim()) showError(f.el, f.msg);
+      if (!f.el.value.trim()) inlineError(f.el, f.msg);
     });
 
-    if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
-      showError(confirmPassword, "Passwords do not match.");
+    if (password.value !== confirmPassword.value) {
+      inlineError(confirmPassword, "Passwords do not match.");
     }
 
-    // Basic format checks (optional)
     const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
     const phonePattern = /^[0-9]{10,15}$/;
 
     if (email.value && !emailPattern.test(email.value)) {
-      showError(email, "Invalid email format.");
+      inlineError(email, "Invalid email format.");
     }
-
     if (phone.value && !phonePattern.test(phone.value)) {
-      showError(phone, "Phone must be 10–15 digits.");
+      inlineError(phone, "Phone must be 10–15 digits.");
     }
 
     if (hasError) return;
 
-    // Continue to OTP Simulation
     const newUser = {
       firstName: document.getElementById("firstName").value.trim(),
       middleName: document.getElementById("middleName").value.trim(),
@@ -130,8 +119,7 @@ document.getElementById("auth-form").addEventListener("submit", function (e) {
     const fakeOTP = Math.floor(100000 + Math.random() * 900000).toString();
     localStorage.setItem("pendingUser", JSON.stringify(newUser));
     localStorage.setItem("otpCode", fakeOTP);
-
-    alert(`OTP sent via ${newUser.otpMethod.toUpperCase()}: ${fakeOTP}`);
+    alert(`📲 OTP sent via ${newUser.otpMethod.toUpperCase()}: ${fakeOTP}`);
     promptOTP();
   }
 });
@@ -144,22 +132,24 @@ function promptOTP() {
   if (enteredOtp === storedOtp && pendingUser) {
     users.push(pendingUser);
     localStorage.setItem("users", JSON.stringify(users));
-    alert("✅ Registration successful. You can now log in.");
+    alert("✅ Registration successful!");
     toggleForm();
   } else {
-    showError("Invalid OTP. Registration failed.");
+    alert("❌ Invalid OTP. Please try again.");
   }
 
   localStorage.removeItem("pendingUser");
   localStorage.removeItem("otpCode");
 }
 
+// Dashboard display
 function showDashboard(username) {
   document.querySelector(".auth-container").style.display = "none";
   document.getElementById("dashboard").style.display = "block";
   document.getElementById("user-display").innerText = `Hello, ${username}!`;
 }
 
+// Logout
 function logout() {
   currentUser = null;
   document.querySelector(".auth-container").style.display = "block";
@@ -167,24 +157,51 @@ function logout() {
   document.getElementById("auth-form").reset();
 }
 
+// Initial toggle to show login/register correctly
 toggleForm();
 
-// Simulate secure auto-login prompt (Password confirmation or fingerprint)
-function secureLoginPrompt(savedUser) {
-  const passwordPrompt = prompt(`🔐 Enter your password to unlock (${savedUser.username}):`);
-
-  if (passwordPrompt === savedUser.password) {
-    currentUser = savedUser;
-    showDashboard(savedUser.username);
-  } else {
-    alert("❌ Incorrect password. Access denied.");
-    localStorage.removeItem("autoLoginUser");
-  }
+// Dark mode toggle
+function toggleDarkMode() {
+  document.body.classList.toggle('dark');
 }
 
+// Detect offline/online
+window.addEventListener("offline", () => alert("⚠️ You're offline. Some features may not work."));
+window.addEventListener("online", () => alert("✅ You're back online!"));
+
+// Splash screen
+window.addEventListener("load", () => {
+  const splash = document.getElementById("splash-screen");
+  splash.classList.add("fade-out");
+
+  setTimeout(() => {
+    splash.style.display = "none";
+    document.querySelector(".auth-container").style.display = "block";
+    toggleForm();
+  }, 1000);
+});
+
+// Auto login with password prompt
+document.addEventListener("DOMContentLoaded", () => {
+  const savedUser = localStorage.getItem("loggedInUser");
+  if (savedUser) {
+    const parsedUser = JSON.parse(savedUser);
+    const rePassword = prompt(`🔐 Welcome back, ${parsedUser.username}! Please enter your password to continue:`);
+    if (rePassword === parsedUser.password) {
+      currentUser = parsedUser;
+      showDashboard(currentUser.username);
+    } else {
+      alert("❌ Incorrect password.");
+      logout();
+    }
+  }
+});
+
+// Navigation pages
 function navigateTo(page) {
-  if (page === 'buyData') {
-    document.getElementById("content-screen").innerHTML = `
+  const content = document.getElementById("content-screen");
+  if (page === "buyData") {
+    content.innerHTML = `
       <h3>Buy Data</h3>
       <form id="buyDataForm">
         <select id="network">
@@ -210,34 +227,22 @@ function navigateTo(page) {
       e.preventDefault();
       const network = document.getElementById("network").value;
       const dataPlan = document.getElementById("dataPlan").value;
-      const phoneNumber = document.getElementById("phoneNumber").value;
-
-      if (!network || !dataPlan || !phoneNumber) {
-        alert("Please fill all fields!");
-        return;
-      }
+      const phone = document.getElementById("phoneNumber").value;
+      if (!network || !dataPlan || !phone) return alert("All fields are required!");
 
       document.getElementById("result").innerHTML = `
         ✅ Data Purchase Successful!<br>
         Network: ${network.toUpperCase()}<br>
         Data: ${dataPlan}MB<br>
-        Phone: ${phoneNumber}<br>
+        Phone: ${phone}
       `;
-
-      transactionHistory.push(`DATA: ${network.toUpperCase()} - ${dataPlan}MB for ${phoneNumber}`);
+      transactionHistory.push(`DATA: ${network.toUpperCase()} - ${dataPlan}MB for ${phone}`);
       localStorage.setItem("transactionHistory", JSON.stringify(transactionHistory));
-      
-      // Attempt to trigger background sync
-      if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        navigator.serviceWorker.ready.then(registration => {
-          registration.sync.register('sync-transactions');
-        }).catch(err => console.log('Sync registration failed:', err));
-      }
     });
   }
 
-  else if (page === 'buyAirtime') {
-    document.getElementById("content-screen").innerHTML = `
+  else if (page === "buyAirtime") {
+    content.innerHTML = `
       <h3>Buy Airtime</h3>
       <form id="buyAirtimeForm">
         <select id="airtimeNetwork">
@@ -247,8 +252,8 @@ function navigateTo(page) {
           <option value="airtel">Airtel</option>
           <option value="9mobile">9mobile</option>
         </select><br><br>
-        <input type="number" id="amount" placeholder="Amount (₦)" required /><br><br>
-        <input type="text" id="airtimePhone" placeholder="Phone Number" required /><br><br>
+        <input type="number" id="amount" placeholder="Amount (₦)" /><br><br>
+        <input type="tel" id="airtimePhone" placeholder="Phone Number" /><br><br>
         <button type="submit">Buy Airtime</button>
       </form>
       <div id="airtimeResult"></div>
@@ -256,167 +261,94 @@ function navigateTo(page) {
 
     document.getElementById("buyAirtimeForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const network = document.getElementById("airtimeNetwork").value;
-      const amount = document.getElementById("amount").value;
-      const phone = document.getElementById("airtimePhone").value;
-
-      if (!network || !amount || !phone) {
-        alert("Please fill all fields!");
-        return;
-      }
+      const net = document.getElementById("airtimeNetwork").value;
+      const amt = document.getElementById("amount").value;
+      const phn = document.getElementById("airtimePhone").value;
+      if (!net || !amt || !phn) return alert("Please fill all fields!");
 
       document.getElementById("airtimeResult").innerHTML = `
         ✅ Airtime Purchase Successful!<br>
-        Network: ${network.toUpperCase()}<br>
-        Amount: ₦${amount}<br>
-        Phone: ${phone}<br>
+        Network: ${net.toUpperCase()}<br>
+        Amount: ₦${amt}<br>
+        Phone: ${phn}
       `;
     });
   }
 
-  else if (page === 'wallet') {
-    document.getElementById("content-screen").innerHTML = `
+  else if (page === "wallet") {
+    content.innerHTML = `
       <h3>Wallet</h3>
       <p>Wallet Balance: ₦<span id="wallet-balance">0</span></p>
-
-      <h4>Fund Wallet</h4>
       <form id="fundWalletForm">
-        <input type="number" id="fundAmount" placeholder="Enter amount" required /><br><br>
+        <input type="number" id="fundAmount" placeholder="Enter amount" /><br><br>
         <button type="submit">Fund Wallet</button>
       </form>
-
-      <h4>Withdraw</h4>
       <form id="withdrawForm">
-        <input type="number" id="withdrawAmount" placeholder="Enter amount" required /><br><br>
+        <input type="number" id="withdrawAmount" placeholder="Enter amount" /><br><br>
         <button type="submit">Withdraw</button>
       </form>
-
       <div id="walletResult"></div>
     `;
 
-    let walletBalance = 0;
-
+    let balance = 0;
     document.getElementById("fundWalletForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const amount = parseFloat(document.getElementById("fundAmount").value);
-      if (amount > 0) {
-        walletBalance += amount;
-        updateWalletBalance();
-        document.getElementById("walletResult").innerText = `Wallet funded with ₦${amount}`;
+      const amt = parseFloat(document.getElementById("fundAmount").value);
+      if (amt > 0) {
+        balance += amt;
+        updateWallet();
       }
     });
 
     document.getElementById("withdrawForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const amount = parseFloat(document.getElementById("withdrawAmount").value);
-      if (amount > 0 && amount <= walletBalance) {
-        walletBalance -= amount;
-        updateWalletBalance();
-        document.getElementById("walletResult").innerText = `Withdrawal of ₦${amount} successful`;
+      const amt = parseFloat(document.getElementById("withdrawAmount").value);
+      if (amt > 0 && amt <= balance) {
+        balance -= amt;
+        updateWallet();
       } else {
-        document.getElementById("walletResult").innerText = `Insufficient funds`;
+        document.getElementById("walletResult").innerText = `Insufficient funds.`;
       }
     });
 
-    function updateWalletBalance() {
-      document.getElementById("wallet-balance").innerText = walletBalance.toFixed(2);
+    function updateWallet() {
+      document.getElementById("wallet-balance").innerText = balance.toFixed(2);
+      document.getElementById("walletResult").innerText = `Balance: ₦${balance.toFixed(2)}`;
     }
   }
 
-  else if (page === 'history') {
-    let historyHtml = "<h3>Transaction History</h3>";
-    const storedHistory = JSON.parse(localStorage.getItem("transactionHistory") || "[]");
-  
-    if (storedHistory.length === 0) {
-      historyHtml += "<p>No transactions yet.</p>";
+  else if (page === "history") {
+    const history = JSON.parse(localStorage.getItem("transactionHistory") || "[]");
+    let html = "<h3>Transaction History</h3>";
+    if (history.length === 0) {
+      html += "<p>No transactions yet.</p>";
     } else {
-      historyHtml += "<ul>";
-      storedHistory.forEach(item => {
-        historyHtml += `<li>${item}</li>`;
-      });
-      historyHtml += "</ul>";
+      html += "<ul>" + history.map(h => `<li>${h}</li>`).join('') + "</ul>";
     }
-  
-    document.getElementById("content-screen").innerHTML = historyHtml;
-  }  
+    content.innerHTML = html;
+  }
 
-  else if (page === 'profile') {
-    const user = users.find((u) => u.username === currentUser?.username);
-  
-    document.getElementById("content-screen").innerHTML = `
+  else if (page === "profile") {
+    const u = users.find(u => u.username === currentUser?.username);
+    content.innerHTML = `
       <h3>Profile</h3>
-      <p><strong>Full Name:</strong> ${user.firstName} ${user.middleName || ''} ${user.lastName}</p>
-      <p><strong>Username:</strong> ${user.username}</p>
-      <p><strong>Email:</strong> ${user.email}</p>
-      <p><strong>Phone:</strong> ${user.phone}</p>
-      <p><strong>Referral:</strong> ${user.referral || 'N/A'}</p>
-      <p><strong>Status:</strong> Active</p>
+      <p><strong>Name:</strong> ${u.firstName} ${u.middleName || ""} ${u.lastName}</p>
+      <p><strong>Username:</strong> ${u.username}</p>
+      <p><strong>Email:</strong> ${u.email}</p>
+      <p><strong>Phone:</strong> ${u.phone}</p>
+      <p><strong>Referral:</strong> ${u.referral || "N/A"}</p>
     `;
-  }  
+  }
 }
 
-// Register service worker + sync setup
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(async registration => {
-      console.log('✅ Service Worker Registered!');
-      if ('periodicSync' in registration) {
-        try {
-          await registration.periodicSync.register('update-data', {
-            minInterval: 24 * 60 * 60 * 1000 // 1 day
-          });
-          console.log('⏰ Periodic Sync registered');
-        } catch (e) {
-          console.warn('⚠️ Periodic Sync registration failed:', e);
-        }
+// Register Service Worker
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(reg => {
+      console.log("✅ Service Worker Registered!");
+      if ("periodicSync" in reg) {
+        reg.periodicSync.register("update-data", { minInterval: 86400000 });
       }
     })
-    .catch(error => console.log('❌ Service Worker Failed:', error));
+    .catch(err => console.log("❌ Service Worker failed:", err));
 }
-
-// ✅ Secure auto-login after service worker
-document.addEventListener("DOMContentLoaded", () => {
-  const savedUser = localStorage.getItem("loggedInUser");
-  if (savedUser) {
-    const parsedUser = JSON.parse(savedUser);
-    const rePassword = prompt(`🔐 Welcome back, ${parsedUser.username}! Please enter your password to continue:`);
-
-    if (rePassword === parsedUser.password) {
-      currentUser = parsedUser;
-      showDashboard(currentUser.username);
-    } else {
-      showError("Incorrect password. Please log in manually.");
-      logout();
-    }
-  }
-});
-
-function toggleDarkMode() {
-  document.body.classList.toggle('dark');
-}
-
-// 🔌 Detect offline mode
-window.addEventListener("offline", () => {
-  alert("⚠️ You are currently offline. Some features may not work.");
-});
-
-// 🔁 Detect back online
-window.addEventListener("online", () => {
-  alert("✅ You're back online!");
-});
-
-// Splash Setting
-
-window.addEventListener('load', () => {
-  const splash = document.getElementById('splash-screen');
-  splash.classList.add('fade-out');
-
-  setTimeout(() => {
-    splash.style.display = 'none';
-    document.querySelector('.auth-container').style.display = 'block';
-    toggleForm();
-  }, 1000); // 1s for fade-out
-
-  // Optional: use 5-10s delay if you want dramatic story effect
-  // setTimeout(() => { ... }, 5000); instead
-});

@@ -2,11 +2,10 @@
 <html lang="en">
 
 <head>
-    <meta name="theme-color" content="#3b82f6" />
-    <meta name="background-color" content="#ffffff" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0d6efd" />
+    <meta name="theme-color" content="#F57C00" />
+    <meta name="background-color" content="#ffffff" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>ByteForge Data App</title>
     <link rel="manifest" href="manifest.json" />
@@ -15,72 +14,81 @@
 </head>
 
 <body>
-    <button class="theme-toggle" onclick="toggleDarkMode()">🌓 Toggle Theme</button>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleDarkMode()">🌓 Theme</button>
 
     <!-- Splash Screen -->
     <div id="splash-screen">
-        <img loading="lazy" src="icon-512.png" alt="ByteForge Logo" class="splash-logo" />
+        <img src="icon-512.png" alt="ByteForge Logo" class="splash-logo" />
         <h1 class="splash-title">ByteForge Data App</h1>
         <p class="splash-subtitle">Making life easier, everywhere 🌍</p>
     </div>
 
     <!-- Auth Section -->
-    <div class="auth-container"  style="display: none;">
-        <h2 id="form-title">Login</h2>
+    <div class="auth-container" style="display: none;">
+        <img src="login-header.png" alt="Header" class="auth-header" />
+        <h2 id="form-title">Sign In</h2>
         <form id="auth-form">
-
-            <!-- Register fields -->
-            <!-- First Name -->
             <div id="register-fields" style="display: none;">
-                <input type="text" id="firstName" name="firstName" placeholder="First Name" />
-                <input type="text" id="middleName" name="middleName" placeholder="Middle Name (optional)" />
-                <input type="text" id="lastName" name="lastName" placeholder="Last Name" />
-                <input type="email" id="email" name="email" placeholder="Email" />
-                <input type="text" id="phone" name="phone" placeholder="Phone Number" />
+                <input type="text" id="fullName" placeholder="Full Name" />
+                <input type="text" id="regUsername" placeholder="Username" />
+                <input type="email" id="email" placeholder="Email Address" />
+                <input type="text" id="phone" placeholder="Phone Number" />
+                <input type="text" id="address" placeholder="House Address" />
+                <input type="text" id="referral" placeholder="Referral Username (Optional)" />
+                <input type="password" id="regPassword" placeholder="Password" />
             </div>
 
-            <!-- Username and Password -->
-            <input type="text" id="username" name="username" placeholder="Username" required />
-            <input type="password" id="password" name="password" placeholder="Create Password" required />
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required
-                style="display: none;" />
-
-            <!-- Referral -->
-            <input type="text" id="referral" name="referral" placeholder="Referral (optional)" />
-
-            <!-- OTP Choice -->
-            <div id="otp-options">
-                <label><input type="radio" name="otpChoice" value="email" checked /> Email</label>
-                <label><input type="radio" name="otpChoice" value="sms" /> SMS</label>
+            <div id="login-fields">
+                <input type="text" id="username" placeholder="Username" required />
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="Password" required />
+                    <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+                </div>
+                <div class="forgot-link">
+                    <a href="#">Forgot Password?</a>
+                </div>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit">Login</button>
-            <p id="switch-text">Don't have an account? <a href="#" onclick="toggleForm()">Register here</a></p>
+            <button type="submit" id="submit-btn">SIGN IN</button>
+            <p id="switch-text">
+                I'm a new user. <a href="#" onclick="toggleForm()">Sign Up</a>
+            </p>
         </form>
     </div>
 
     <!-- Dashboard Section -->
     <div id="dashboard" style="display: none;">
-        <h2>Welcome</h2>
-        <p id="user-display"></p>
-        <button onclick="logout()">Logout</button>
+        <div class="dashboard-header">
+            <div class="user-info">
+                <img src="profile.png" alt="User" class="user-avatar" />
+                <div>
+                    <p>Welcome!</p>
+                    <strong id="user-display">User</strong>
+                </div>
+            </div>
+            <div class="balance-box">
+                <p>Available Balance</p>
+                <h2>₦0.0</h2>
+                <p class="referral">Referral Bonus: ₦0.0</p>
+            </div>
+        </div>
 
-        <hr />
-        <nav>
+        <div class="dashboard-buttons">
             <button onclick="navigateTo('buyData')">Buy Data</button>
             <button onclick="navigateTo('buyAirtime')">Buy Airtime</button>
-            <button onclick="navigateTo('wallet')">Wallet</button>
-            <button onclick="navigateTo('history')">History</button>
-            <button onclick="navigateTo('profile')">Profile</button>
-        </nav>
-
-        <div id="content-screen">
-            <!-- Dynamic content loads here -->
+            <button onclick="navigateTo('cableTv')">Cable TV</button>
+            <button onclick="navigateTo('educationPin')">Education Pin</button>
+            <button onclick="navigateTo('bill')">Bill Payment</button>
+            <button onclick="navigateTo('transfer')">Transfer</button>
+            <button onclick="navigateTo('bulkSms')">Bulk SMS</button>
+            <button onclick="logout()">Logout</button>
         </div>
+
+        <div id="content-screen"></div>
     </div>
 
-    <!-- Main Script (placed at the end for best performance) -->
+    <!-- Main Script -->
     <script src="script.js"></script>
 </body>
 
